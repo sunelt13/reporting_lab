@@ -1,0 +1,6 @@
+# Requests that compliant crawlers do not crawl this host.
+# This file is not authentication and cannot prevent scraping.
+# Crawlers only read robots.txt at the origin root (https://HOST/robots.txt),
+# so the copy that takes effect for this site lives in the sunelt13.github.io repo.
+User-agent: *
+Disallow: /

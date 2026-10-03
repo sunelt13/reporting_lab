@@ -1,0 +1,1048 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow, noarchive, nosnippet, noimageindex">
+<meta name="referrer" content="no-referrer">
+<meta name="color-scheme" content="light dark">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 23 23'%3E%3Cpath fill='%23f25022' d='M0 0h11v11H0z'/%3E%3Cpath fill='%237fba00' d='M12 0h11v11H12z'/%3E%3Cpath fill='%2300a4ef' d='M0 12h11v11H0z'/%3E%3Cpath fill='%23ffb900' d='M12 12h11v11H12z'/%3E%3C/svg%3E">
+<title>Build Your Weekly Report with Copilot Cowork — Hands-on lab</title>
+<script>
+  (() => {
+    const valid = value => value === "dark" || value === "light";
+    let theme = new URLSearchParams(window.location.search).get("scoutTheme");
+    if (!valid(theme)) {
+      try { theme = JSON.parse(window.localStorage.getItem("lab-hls-weekly-report-v1") || "{}").theme; } catch (error) { theme = null; }
+    }
+    if (!valid(theme)) theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+    document.documentElement.setAttribute("data-theme", theme);
+    document.documentElement.classList.add("js");
+  })();
+</script>
+<style>
+:root {
+  color-scheme: light;
+  --guide-scroll-offset: 5.5rem;
+  --cp-bg: #f5f5f5;
+  --cp-bg-elevated: #fafafa;
+  --cp-surface: #ffffff;
+  --cp-surface-soft: #f0f0f0;
+  --cp-border: #dedede;
+  --cp-border-strong: #8a8a8a;
+  --cp-text: #242424;
+  --cp-text-muted: #5c5c5c;
+  --cp-accent: #0078d4;
+  --cp-accent-text: #005a9e;
+  --cp-accent-hover: #106ebe;
+  --cp-accent-soft: rgba(0, 120, 212, 0.08);
+  --cp-accent-fg: #ffffff;
+  --cp-success: #107c10;
+  --cp-success-text: #107c10;
+  --cp-success-hover: #0b6a0b;
+  --cp-success-fg: #ffffff;
+  --cp-danger: #c4262b;
+  --cp-warning: #c27c00;
+  --cp-setup: #d97400;
+  --cp-setup-bg: rgba(255, 152, 0, 0.07);
+  --cp-setup-text: #8a4600;
+  --cp-placeholder-bg: #fff4ce;
+  --cp-placeholder-border: #8a6d00;
+  --cp-brand-red: #f25022;
+  --cp-brand-green: #7fba00;
+  --cp-brand-blue: #00a4ef;
+  --cp-brand-yellow: #ffb900;
+  --cp-overlay: rgba(255, 255, 255, 0.8);
+  --cp-highlight: rgba(0, 120, 212, 0.12);
+}
+html[data-theme="dark"] {
+  color-scheme: dark;
+  --cp-bg: #1b1b1b;
+  --cp-bg-elevated: #252525;
+  --cp-surface: #2d2d2d;
+  --cp-surface-soft: #333333;
+  --cp-border: #404040;
+  --cp-border-strong: #8a8a8a;
+  --cp-text: #e0e0e0;
+  --cp-text-muted: #b0b0b0;
+  --cp-accent: #4da6ff;
+  --cp-accent-text: #6cb8ff;
+  --cp-accent-hover: #6cb8ff;
+  --cp-accent-soft: rgba(77, 166, 255, 0.12);
+  --cp-accent-fg: #1a1a1a;
+  --cp-success: #4ade80;
+  --cp-success-text: #4ade80;
+  --cp-success-hover: #63e696;
+  --cp-success-fg: #1a1a1a;
+  --cp-danger: #f87171;
+  --cp-warning: #fbbf24;
+  --cp-setup: #ffa726;
+  --cp-setup-bg: rgba(255, 152, 0, 0.08);
+  --cp-setup-text: #ffb74d;
+  --cp-placeholder-bg: rgba(252, 211, 77, 0.12);
+  --cp-placeholder-border: #c9a227;
+  --cp-overlay: rgba(27, 27, 27, 0.88);
+  --cp-highlight: rgba(77, 166, 255, 0.12);
+}
+
+* { box-sizing: border-box; }
+html { scroll-padding-block-start: var(--guide-scroll-offset); }
+html.smooth-scroll { scroll-behavior: smooth; }
+body { margin: 0; font: 1rem/1.65 "Segoe UI", Aptos, Calibri, -apple-system, BlinkMacSystemFont, system-ui, sans-serif; background: var(--cp-bg); color: var(--cp-text); overflow-wrap: anywhere; }
+[hidden] { display: none !important; }
+button, input, textarea { font: inherit; }
+button { cursor: pointer; }
+button, .button { border: 1px solid var(--cp-border-strong); border-radius: 10px; background: var(--cp-surface); color: var(--cp-text); padding: .5625rem 1rem; font-weight: 600; min-height: 2.75rem; min-inline-size: 0; max-inline-size: 100%; white-space: normal; overflow-wrap: anywhere; text-align: center; }
+button:hover, .button:hover { background: var(--cp-surface-soft); }
+a { color: var(--cp-accent-text); text-underline-offset: 3px; overflow-wrap: anywhere; }
+a:hover { text-decoration-thickness: 2px; }
+.button { display: inline-flex; align-items: center; justify-content: center; gap: .5rem; text-decoration: none; }
+.primary { background: var(--cp-accent); color: var(--cp-accent-fg); border-color: var(--cp-accent); }
+.primary:hover { background: var(--cp-accent-hover); color: var(--cp-accent-fg); }
+:focus-visible { outline: 3px solid var(--cp-accent); outline-offset: 4px; }
+h1, h2, h3, h4, p, figure { margin: 0; }
+h1 { font-size: clamp(2rem, 1.25rem + 2.5vw, 3.125rem); letter-spacing: -.04em; line-height: 1.12; font-weight: 650; }
+h2 { font-size: clamp(1.375rem, 1.2rem + .6vw, 1.625rem); letter-spacing: -.02em; line-height: 1.3; }
+h3 { font-size: 1.1875rem; line-height: 1.4; }
+p + p { margin-top: .75rem; }
+ul, ol { padding-left: 1.5rem; margin: .75rem 0; }
+li + li { margin-top: .5rem; }
+strong { font-weight: 650; }
+.muted, .small { color: var(--cp-text-muted); }
+.small { font-size: .8125rem; line-height: 1.55; }
+.eyebrow { font-size: .75rem; letter-spacing: .12em; text-transform: uppercase; font-weight: 700; color: var(--cp-accent-text); }
+.sr-only { position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0; }
+.skip-link { position: fixed; left: 1rem; top: -5rem; z-index: 50; background: var(--cp-surface); padding: .75rem 1.25rem; border-radius: 10px; }
+.skip-link:focus { top: .5rem; }
+html:not(.js) .js-only, html:not(.js) .completion-button, html:not(.js) .copy-button, html:not(.js) .sidebar { display: none !important; }
+
+/* Header */
+.site-header { position: sticky; top: 0; z-index: 20; background: var(--cp-surface); border-bottom: 1px solid var(--cp-border); }
+.site-header.is-static { position: relative; }
+.header-inner { max-width: 90rem; margin: auto; padding: .625rem clamp(1rem, 3vw, 2.25rem); display: flex; flex-wrap: wrap; gap: .5rem 1.25rem; align-items: center; }
+.wordmark { display: inline-flex; align-items: center; gap: .625rem; font-size: 1.125rem; font-weight: 600; letter-spacing: -.02em; flex-shrink: 0; }
+.brand-symbol { display: grid; grid-template-columns: repeat(2, 10px); grid-template-rows: repeat(2, 10px); gap: 2px; }
+.brand-symbol i:nth-child(1) { background: var(--cp-brand-red); }
+.brand-symbol i:nth-child(2) { background: var(--cp-brand-green); }
+.brand-symbol i:nth-child(3) { background: var(--cp-brand-blue); }
+.brand-symbol i:nth-child(4) { background: var(--cp-brand-yellow); }
+.header-rule { border-left: 1px solid var(--cp-border); height: 24px; }
+.header-title { font-size: .875rem; flex: 1 1 16rem; min-inline-size: 0; }
+.header-tools { margin-left: auto; display: flex; flex-wrap: wrap; align-items: center; gap: .5rem; min-inline-size: 0; max-inline-size: 100%; }
+.header-tools button { padding: .375rem .75rem; font-size: .8125rem; }
+.header-count { font-size: .8125rem; font-weight: 650; color: var(--cp-text-muted); font-variant-numeric: tabular-nums; padding-inline: .25rem; }
+.header-progress { position: absolute; left: 0; bottom: -1px; height: 3px; width: 0; background: var(--cp-success); transition: width 240ms ease; }
+
+/* Layout */
+.shell { max-width: 90rem; margin: auto; padding: clamp(1rem, 3vw, 2.5rem) clamp(1rem, 3vw, 2.25rem) 4rem; display: grid; grid-template-columns: minmax(0, 1fr); gap: 1.5rem; align-items: start; }
+.shell > * { min-inline-size: 0; }
+main { min-width: 0; max-width: 52rem; }
+.sidebar { position: static; padding-bottom: 1rem; border-bottom: 1px solid var(--cp-border); }
+.sidebar-title { font-size: .75rem; text-transform: uppercase; letter-spacing: .1em; color: var(--cp-text-muted); margin-bottom: .75rem; font-weight: 700; }
+.progress-label { display: flex; justify-content: space-between; flex-wrap: wrap; gap: .25rem .75rem; font-size: .8125rem; font-weight: 600; }
+.progress-label span:last-child { font-variant-numeric: tabular-nums; }
+progress { width: 100%; height: 6px; border: none; border-radius: 4px; background: var(--cp-border); accent-color: var(--cp-success); display: block; margin: .625rem 0 .75rem; }
+progress::-webkit-progress-bar { background: var(--cp-border); border-radius: 4px; }
+progress::-webkit-progress-value { background: var(--cp-success); border-radius: 4px; }
+progress::-moz-progress-bar { background: var(--cp-success); }
+.guide-navigation { margin: .5rem 0 0; border: 1px solid var(--cp-border); border-radius: 10px; background: var(--cp-surface); }
+.guide-navigation > summary { min-block-size: 2.75rem; padding: .75rem 1rem; font-weight: 600; font-size: .875rem; cursor: pointer; }
+.navigation-content { padding: 0 .5rem 1rem; }
+.step-nav ol { list-style: none; margin: 0; padding: 0; }
+.step-nav li + li { margin-top: 2px; }
+.step-nav a { display: flex; gap: .625rem; align-items: center; min-block-size: 2.75rem; padding: .5rem .625rem; border-radius: 10px; color: var(--cp-text-muted); text-decoration: none; font-size: .875rem; line-height: 1.35; min-inline-size: 0; }
+.step-nav a > span { min-inline-size: 0; }
+.step-nav a:hover { background: var(--cp-surface-soft); color: var(--cp-text); }
+.step-nav a[aria-current] { background: var(--cp-accent-soft); color: var(--cp-accent-text); font-weight: 650; }
+.step-nav .nav-exercise { margin-top: .75rem; }
+.step-nav .nav-exercise > a { color: var(--cp-text); font-weight: 650; flex-wrap: wrap; column-gap: .375rem; }
+.step-nav .nav-exercise ol { padding-left: .375rem; }
+.nav-meta { font-weight: 400; color: var(--cp-text-muted); font-size: .75rem; }
+.nav-number { display: inline-flex; align-items: center; justify-content: center; gap: .125rem; flex-shrink: 0; min-width: 2.375rem; height: 1.625rem; padding: 0 .375rem; border: 1px solid var(--cp-border-strong); border-radius: 999px; font: .75rem/1 ui-monospace, Consolas, "SF Mono", Menlo, "Courier New", monospace; color: var(--cp-text); }
+.step-nav a.done .nav-number { background: var(--cp-success); border-color: var(--cp-success); color: var(--cp-success-fg); }
+.step-nav a.done .nav-number::before { content: "\2713"; font-family: "Segoe UI", system-ui, sans-serif; font-weight: 700; }
+.sidebar-note { margin-top: 1rem; padding: 1rem .625rem 0; border-top: 1px solid var(--cp-border); }
+.sidebar-note button { margin-top: .75rem; font-size: .8125rem; }
+
+/* Hero and overview */
+.hero { margin-bottom: 2rem; }
+.hero h1 { margin: .75rem 0 1rem; max-width: 18ch; }
+.hero .intro { font-size: 1.125rem; line-height: 1.6; color: var(--cp-text-muted); max-width: 40rem; }
+.hero-meta { list-style: none; padding: 0; margin: 1.25rem 0 0; display: flex; flex-wrap: wrap; gap: .375rem 1.25rem; font-size: .8125rem; color: var(--cp-text-muted); }
+.hero-meta li { margin: 0; }
+.actions { display: flex; flex-wrap: wrap; gap: .5rem; align-items: center; margin: 1.25rem 0; }
+.overview { scroll-margin-top: 0; }
+.leave-with { list-style: none; counter-reset: leave; padding: 0; margin: 1rem 0 1.5rem; border-top: 1px solid var(--cp-border); }
+.leave-with li { counter-increment: leave; display: grid; grid-template-columns: 2.25rem minmax(0, 1fr); gap: .75rem; padding: .875rem 0; margin: 0; border-bottom: 1px solid var(--cp-border); }
+.leave-with li::before { content: counter(leave); font: 650 1.25rem/1.3 "Segoe UI", system-ui, sans-serif; color: var(--cp-accent-text); }
+
+/* Callouts */
+.callout { padding: 1rem 1.25rem; background: var(--cp-surface); border-left: 4px solid var(--cp-accent); border-radius: 0 10px 10px 0; margin: 1.25rem 0; font-size: .9375rem; }
+.callout > strong:first-child { display: block; margin-bottom: .25rem; }
+.callout ul { margin: .5rem 0 0; }
+.callout.important { border-left-color: var(--cp-danger); }
+.callout.warning { border-left-color: var(--cp-warning); }
+.callout.success { border-left-color: var(--cp-success); }
+
+/* Pre-lab setup */
+.setup { margin-top: 2.5rem; padding: clamp(1rem, 3vw, 1.75rem); background: var(--cp-setup-bg); border: 1px solid var(--cp-setup); border-left-width: 4px; border-radius: 0 16px 16px 0; scroll-margin-top: 0; }
+.setup__header { display: flex; flex-wrap: wrap; align-items: center; gap: .5rem .75rem; margin-bottom: .5rem; }
+.setup__badge { font-size: .6875rem; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--cp-setup-text); border: 1px solid var(--cp-setup); border-radius: 999px; padding: .125rem .625rem; }
+.setup__meta { font-size: .8125rem; color: var(--cp-text-muted); }
+.setup__list { margin-top: 1rem; }
+.setup__list > li { padding-left: .25rem; }
+.setup__list > li + li { margin-top: 1.25rem; }
+.setup .callout { background: var(--cp-surface); }
+.done-line { margin-top: .5rem; font-size: .9375rem; }
+
+/* Exercises and steps */
+.exercise { margin-top: 3.5rem; scroll-margin-top: 0; }
+.exercise__header { padding-bottom: 1rem; border-bottom: 2px solid var(--cp-text); }
+.exercise__header h2 { margin-top: .25rem; }
+.exercise__meta { display: flex; flex-wrap: wrap; gap: .25rem 1rem; margin-top: .5rem; font-size: .8125rem; color: var(--cp-text-muted); }
+.exercise--complete .ex-count { color: var(--cp-success-text); font-weight: 650; }
+.exercise--complete .ex-count::before { content: "\2713  "; }
+.lab-step { padding: 1.75rem 0; border-bottom: 1px solid var(--cp-border); scroll-margin-top: 0; }
+.lab-step__header { display: grid; grid-template-columns: 2rem minmax(0, 1fr); gap: .75rem; margin-bottom: 1rem; align-items: start; }
+.lab-step__header > * { min-inline-size: 0; }
+.step-number { width: 2rem; height: 2rem; border-radius: 8px; background: var(--cp-accent-soft); color: var(--cp-accent-text); display: flex; align-items: center; justify-content: center; font-size: .9375rem; font-weight: 700; }
+.lab-step.completed .step-number { background: var(--cp-success); color: var(--cp-success-fg); }
+.lab-step__header .small { margin-top: .25rem; }
+.lab-step__body { min-inline-size: 0; }
+.lab-step__body > p, .lab-step__body li { font-size: .9375rem; }
+
+/* Code blocks */
+.lab-code { margin: 1rem 0; border: 1px solid var(--cp-border); border-radius: 10px; background: var(--cp-surface); }
+.code-header { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: .5rem .75rem; padding: .375rem .5rem .375rem 1rem; border-bottom: 1px solid var(--cp-border); }
+.code-header span { flex: 1 1 8rem; min-inline-size: 0; font-size: .6875rem; letter-spacing: .08em; text-transform: uppercase; font-weight: 700; color: var(--cp-text-muted); }
+.code-header button { font-size: .8125rem; padding: .25rem .875rem; }
+.copy-button.copied { border-color: var(--cp-success); color: var(--cp-success-text); }
+pre { margin: 0; padding: 1rem; font: .875rem/1.65 ui-monospace, Consolas, "SF Mono", Menlo, "Courier New", monospace; white-space: pre-wrap; overflow-wrap: anywhere; color: var(--cp-text); background: var(--cp-bg-elevated); border-radius: 0 0 10px 10px; }
+
+/* Placeholders */
+.placeholder { font: .8125rem/1.5 ui-monospace, Consolas, "SF Mono", Menlo, "Courier New", monospace; background: var(--cp-placeholder-bg); border: 1px dashed var(--cp-placeholder-border); border-radius: 4px; padding: .0625rem .375rem; overflow-wrap: anywhere; -webkit-box-decoration-break: clone; box-decoration-break: clone; }
+.shot-placeholder { margin: 1rem 0; display: flex; align-items: center; justify-content: center; text-align: center; min-block-size: 7rem; max-width: 34rem; padding: 1.25rem; border: 2px dashed var(--cp-border-strong); border-radius: 12px; background: var(--cp-surface-soft); color: var(--cp-text-muted); font: .8125rem/1.5 ui-monospace, Consolas, "SF Mono", Menlo, "Courier New", monospace; }
+
+/* Check list inside steps */
+.checks { list-style: none; padding: 0; margin: 1rem 0; border-top: 1px solid var(--cp-border); }
+.checks li { display: grid; grid-template-columns: minmax(0, 8.5rem) minmax(0, 1fr); gap: .25rem 1rem; padding: .75rem 0; margin: 0; border-bottom: 1px solid var(--cp-border); font-size: .9375rem; }
+.checks li strong { color: var(--cp-text); }
+
+/* Completion */
+.completion-control { margin-top: 1.5rem; }
+.completion-criterion { margin-bottom: .75rem; font-size: .9375rem; }
+.completion-button { display: flex; width: 100%; min-height: 4rem; justify-content: center; align-items: center; gap: .75rem; padding: 1rem 1.25rem; color: var(--cp-accent-text); background: var(--cp-accent-soft); border-color: var(--cp-accent); transition: background-color 180ms ease, color 180ms ease, border-color 180ms ease; }
+.completion-button [data-done-label] { min-inline-size: 0; }
+.completion-button:hover { color: var(--cp-accent-text); background: var(--cp-highlight); }
+.completion-button[aria-pressed="true"] { background: var(--cp-success); border-color: var(--cp-success); color: var(--cp-success-fg); }
+.completion-button[aria-pressed="true"]:hover { background: var(--cp-success-hover); border-color: var(--cp-success-hover); }
+.completion-symbol { display: inline-flex; width: 26px; height: 26px; flex-shrink: 0; align-items: center; justify-content: center; border: 2px solid currentColor; border-radius: 50%; }
+.completion-symbol svg { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round; }
+.completion-symbol path { stroke-dasharray: 1; stroke-dashoffset: 1; }
+.completion-button[aria-pressed="true"] .completion-symbol path { stroke-dashoffset: 0; }
+.completion-button.is-celebrating .completion-symbol { animation: done-pop 260ms ease-out; }
+.completion-button.is-celebrating .completion-symbol path { animation: done-check 220ms ease-out; }
+.next-step { margin-top: .75rem; }
+@keyframes done-pop { 0% { transform: scale(.8); } 60% { transform: scale(1.12); } 100% { transform: scale(1); } }
+@keyframes done-check { from { stroke-dashoffset: 1; } to { stroke-dashoffset: 0; } }
+
+/* Stretch goal */
+.stretch { margin: 1.75rem 0 0; padding: 1.25rem; border: 1px solid var(--cp-accent); border-left-width: 4px; border-radius: 0 12px 12px 0; background: var(--cp-surface); }
+.stretch h3 { margin-top: .25rem; }
+.stretch p { font-size: .9375rem; margin-top: .5rem; }
+
+/* Wrap-up, sources, footer */
+.outcome { padding: clamp(1.25rem, 3vw, 1.75rem); margin: 3rem 0 0; border: 1px solid var(--cp-border-strong); border-left: 4px solid var(--cp-accent); border-radius: 0 16px 16px 0; background: var(--cp-surface); scroll-margin-top: 0; }
+.outcome.complete { border-left-color: var(--cp-success); }
+.outcome h2 { margin: .5rem 0; }
+.reference-section { margin-top: 3rem; border-top: 1px solid var(--cp-border-strong); padding-top: 1.75rem; scroll-margin-top: 0; }
+.reference-list { padding-left: 1.5rem; }
+.reference-list li { padding: .5rem 0; font-size: .875rem; margin: 0; }
+.reference-list .small { display: block; margin-top: .25rem; }
+.reference-url { display: block; font-size: .6875rem; color: var(--cp-text-muted); overflow-wrap: anywhere; }
+.footer { margin-top: 2rem; padding-top: 1.25rem; border-top: 1px solid var(--cp-border); font-size: .8125rem; color: var(--cp-text-muted); display: flex; flex-wrap: wrap; gap: .75rem 1.5rem; align-items: center; justify-content: space-between; }
+.footer p { flex: 1 1 18rem; }
+.footer button { font-size: .8125rem; }
+.notice { display: block; padding: 1rem 1.25rem; margin: 0 0 1.5rem; background: var(--cp-surface); color: var(--cp-text); border: 2px solid var(--cp-danger); border-radius: 10px; font-size: .9375rem; }
+
+/* Toast and dialogs */
+.toast { position: fixed; bottom: 1.5rem; left: 50%; transform: translateX(-50%); width: max-content; max-width: calc(100% - 2rem); z-index: 60; padding: .75rem 1.25rem; color: var(--cp-accent-fg); background: var(--cp-accent); border-radius: 10px; font-size: .875rem; }
+dialog { max-width: 37.5rem; width: calc(100% - 2rem); max-height: calc(100vh - 2rem); max-height: calc(100dvh - 2rem); overflow: auto; overscroll-behavior: contain; padding: clamp(1rem, 4vw, 1.75rem); border: 1px solid var(--cp-border-strong); border-radius: 16px; background: var(--cp-surface); color: var(--cp-text); }
+dialog::backdrop { background: var(--cp-overlay); }
+dialog h2 { font-size: 1.25rem; }
+dialog p { margin-top: .5rem; }
+dialog textarea { width: 100%; max-inline-size: 100%; height: clamp(5rem, 30vh, 13.75rem); height: clamp(5rem, 30dvh, 13.75rem); padding: .75rem; margin: 1rem 0 0; color: var(--cp-text); background: var(--cp-bg-elevated); border: 1px solid var(--cp-border-strong); border-radius: 8px; font: .875rem/1.5 ui-monospace, Consolas, "SF Mono", Menlo, "Courier New", monospace; }
+dialog .actions { justify-content: flex-end; margin-bottom: 0; }
+
+@media (max-width: 48rem) {
+  .header-title, .header-rule { display: none; }
+  .header-inner { gap: .5rem .75rem; }
+  .checks li { grid-template-columns: minmax(0, 1fr); }
+}
+@media (max-width: 26rem) {
+  .wordmark-text { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; }
+  .header-tools button { padding: .375rem .625rem; }
+}
+@media (min-width: 48rem) {
+  .lab-step__header { grid-template-columns: 2.5rem minmax(0, 1fr); gap: 1rem; }
+  .step-number { width: 2.5rem; height: 2.5rem; border-radius: 12px; }
+  .lab-step__body { padding-left: 3.5rem; }
+}
+@media (min-width: 64rem) and (min-height: 44rem) {
+  .shell { grid-template-columns: minmax(0, 16rem) minmax(0, 1fr); gap: clamp(1.5rem, 3vw, 3rem); }
+  .sidebar { position: sticky; top: var(--guide-scroll-offset); max-height: calc(100vh - var(--guide-scroll-offset) - 1rem); max-height: calc(100dvh - var(--guide-scroll-offset) - 1rem); overflow-y: auto; overscroll-behavior: contain; scrollbar-gutter: stable; padding: .25rem .5rem 1rem .25rem; border-bottom: 0; }
+  .guide-navigation { border: 0; background: none; }
+  .guide-navigation > summary { padding: .5rem .25rem .75rem; }
+  .navigation-content { padding: 0; }
+}
+@media (max-height: 35rem) {
+  .site-header { position: relative; }
+}
+@media (prefers-reduced-motion: reduce) {
+  html, html.smooth-scroll { scroll-behavior: auto; }
+  .completion-button, .header-progress { transition: none; }
+  .completion-button.is-celebrating .completion-symbol, .completion-button.is-celebrating .completion-symbol path { animation: none; }
+}
+@media print {
+  :root, html[data-theme="dark"] { color-scheme: light; --cp-bg: #ffffff; --cp-surface: #ffffff; --cp-bg-elevated: #ffffff; --cp-surface-soft: #ffffff; --cp-text: #242424; --cp-text-muted: #5c5c5c; --cp-accent: #0078d4; --cp-accent-text: #005a9e; --cp-border: #dedede; --cp-border-strong: #919191; --cp-accent-soft: #ffffff; --cp-setup-bg: #ffffff; --cp-setup-text: #8a4600; --cp-placeholder-bg: #ffffff; --cp-success: #107c10; --cp-success-text: #107c10; --cp-success-fg: #ffffff; }
+  .site-header, .sidebar, .toast, .no-print, dialog, .copy-button, .completion-button, .next-step, .footer button, .skip-link { display: none !important; }
+  .shell { display: block; padding: 0; max-width: none; }
+  main { max-width: none; }
+  body { font-size: 11pt; }
+  h1 { font-size: 28pt; }
+  h2 { font-size: 17pt; }
+  .exercise { break-before: auto; margin-top: 24pt; }
+  .lab-step { padding: 12pt 0; }
+  .lab-step__body { padding-left: 0; }
+  .lab-step__header, .callout, .lab-code, .shot-placeholder, .completion-control, .checks li { break-inside: avoid; }
+  .completion-criterion::before { content: "\2610  "; font-size: 13pt; }
+  pre { border-top: 1px solid #dedede; }
+  .reference-section { break-before: page; }
+}
+</style>
+</head>
+<body>
+<a class="skip-link" href="#main">Skip to the lab</a>
+<header class="site-header">
+  <div class="header-inner">
+    <span class="wordmark"><span class="brand-symbol" aria-hidden="true"><i></i><i></i><i></i><i></i></span><span class="wordmark-text">Microsoft</span></span><span class="header-rule" aria-hidden="true"></span>
+    <span class="header-title">Weekly report lab <span class="muted">/ Copilot Cowork</span></span>
+    <div class="header-tools js-only">
+      <span class="header-count" id="header-count" aria-hidden="true">0/14</span>
+      <button type="button" id="theme-button">Dark mode</button>
+      <button type="button" id="print-button">Print</button>
+    </div>
+  </div>
+  <div class="header-progress js-only" id="header-progress" aria-hidden="true"></div>
+</header>
+
+<div class="shell">
+  <aside class="sidebar" aria-label="Lab progress and contents">
+    <p class="sidebar-title">Your progress</p>
+    <div class="progress-label"><span>Steps done</span><span id="progress-count">0 of 14</span></div>
+    <progress id="progress" max="14" value="0" aria-label="Steps done"></progress>
+    <details class="guide-navigation" id="guide-navigation" open>
+      <summary>Lab contents &amp; reset</summary>
+      <div class="navigation-content">
+        <nav class="step-nav" aria-label="Lab contents"><ol id="nav-list"></ol></nav>
+        <div class="sidebar-note">
+          <p class="small" id="storage-note">Your progress is saved in this browser only. Nothing on this page is sent anywhere.</p>
+          <button type="button" data-action="reset">Reset my progress</button>
+        </div>
+      </div>
+    </details>
+  </aside>
+
+  <main id="main">
+    <noscript><p class="notice">Copy buttons and progress tracking need JavaScript. Every instruction below still works: select the text in each grey box and copy it yourself.</p></noscript>
+    <p class="notice" id="script-error" hidden>Something stopped the page's buttons from loading. Every instruction below still works: select the text in each grey box and copy it yourself.</p>
+
+    <section class="hero" aria-labelledby="page-title">
+      <p class="eyebrow">HLS SLT · Hands-on lab · Level 100</p>
+      <h1 id="page-title">Build Your Weekly Report with Copilot Cowork</h1>
+      <p class="intro">From MSXi to a trusted, explainable weekly readout — in one working session.</p>
+      <ul class="hero-meta" aria-label="Lab at a glance">
+        <li>~45 min in the room + 5 min pre-lab</li>
+        <li>5 exercises</li>
+        <li>14 steps</li>
+        <li>Cowork steps checked 3 Oct 2026</li>
+      </ul>
+      <div class="actions no-print"><a class="button primary" href="#pre-lab">Start with pre-lab setup <span aria-hidden="true">&darr;</span></a></div>
+    </section>
+
+    <section class="overview" id="overview" aria-labelledby="overview-title">
+      <h2 id="overview-title">What you'll leave with</h2>
+      <ol class="leave-with">
+        <li><span>A Cowork recipe that builds this week's version of your report from MSXi — with every filter it applied shown on the page.</span></li>
+        <li><span>The context your leadership asks for: what changed, what's at risk, what's stale.</span></li>
+        <li><span>A scheduled weekly run — and your recipe written down, which is what SE&amp;O needs to build the durable version.</span></li>
+      </ol>
+      <div class="callout important">
+        <strong>Ground rules</strong>
+        <ul>
+          <li>You pull your own numbers under your own access. Nothing leaves your session unless you choose to share it.</li>
+          <li>Cowork reads the same certified MSXi model you already use. It is not a different source of truth.</li>
+          <li>Expect about 80% on the first pass. The 20% gap is the point of today: it is your definitions, written down.</li>
+        </ul>
+      </div>
+      <div class="callout">
+        <strong>How the session starts</strong>
+        <p>Your facilitator opens with a 5-minute demo — one pre-built task on their own numbers, ending in an HTML page with a "Filters applied" box. Then you build the same thing with yours.</p>
+      </div>
+    </section>
+
+    <section class="setup" id="pre-lab" aria-labelledby="pre-lab-title">
+      <div class="setup__header">
+        <span class="setup__badge">Required</span>
+        <h2 id="pre-lab-title" tabindex="-1">Pre-lab setup</h2>
+        <span class="setup__meta">Before the session · ~5 min</span>
+      </div>
+      <ol class="setup__list">
+        <li>
+          <p><strong>Open Copilot Cowork</strong> and confirm you're signed in with your Microsoft account.</p>
+          <div class="shot-placeholder">{{Screenshot: Cowork home screen}}</div>
+        </li>
+        <li>
+          <p><strong>Run the pre-flight prompt.</strong> Replace [REPORT NAME] with the name of your report.</p>
+          <div class="lab-code"><div class="code-header"><span>Pre-flight prompt</span><button type="button" class="copy-button" data-copy="code-preflight" aria-label="Copy pre-flight prompt">Copy</button></div><pre id="code-preflight">Find the MSX Insights (MSXi) Power BI report I use for my weekly numbers — it's called [REPORT NAME]. Tell me which workspace it's in and list its pages. Don't pull any data yet.</pre></div>
+          <p class="done-line"><strong>You're done when:</strong> it names your report and its pages.</p>
+          <p class="done-line">If it can't, message <span class="placeholder">{{FACILITATOR_CONTACT}}</span> before the session — do not wait for the room.</p>
+        </li>
+        <li><p><strong>Save a copy of last week's report</strong> (your slide) where you can attach it in Cowork. It stays in your own session.</p></li>
+        <li><p><strong>Bookmark your MSXi report</strong> with the slicers set the way you set them every week.</p></li>
+        <li><p><strong>Optional</strong> (saves ~10 minutes in the room): fill in the <a href="#e1s1">Recipe Card from Exercise 1</a> ahead of time.</p></li>
+      </ol>
+      <div class="callout warning">
+        <strong>Your data stays with you</strong>
+        <p>Nothing in this lab is sent to anyone. Your slide, your numbers and your results stay with you.</p>
+      </div>
+    </section>
+
+    <!-- Exercise 1 -->
+    <section class="exercise" id="ex1" data-ex="1" data-nav-title="Write your recipe" data-time="8 min" aria-labelledby="ex1-title">
+      <div class="exercise__header">
+        <p class="eyebrow">Exercise 1</p>
+        <h2 id="ex1-title" tabindex="-1">Write your recipe</h2>
+        <p class="exercise__meta"><span>8 min</span><span>2 steps</span><span class="ex-count js-only" data-ex-count>0 of 2 done</span></p>
+      </div>
+
+      <article class="lab-step" id="e1s1" data-step data-nav-title="Fill in your Recipe Card" aria-labelledby="e1s1-title">
+        <div class="lab-step__header"><span class="step-number" aria-hidden="true">1</span><div><h3 id="e1s1-title" tabindex="-1">Fill in your Recipe Card</h3><p class="small">Exercise 1 · Step 1 of 2</p></div></div>
+        <div class="lab-step__body">
+          <p>Write it the way you'd explain it to a smart intern on their first day. Copy this block into Notepad or straight into Cowork and fill in the brackets.</p>
+          <div class="lab-code"><div class="code-header"><span>Recipe Card</span><button type="button" class="copy-button" data-copy="code-recipe" aria-label="Copy Recipe Card">Copy</button></div><pre id="code-recipe">RECIPE CARD
+1. Report and page I use: [MSXi report name] → [page/tab]
+2. Slicers / filters I set, with their values: [e.g., Segment = …, Solution Area = …, Fiscal period = …]
+3. What's on my slide — each bar or number and what it measures: [e.g., "Qualified pipeline $ per product for (my org's name)"]
+4. Time window / as-of: [current quarter? fiscal YTD? as of Friday close?] Live MSXi or a weekly snapshot? [live / snapshot]
+5. What I do to the numbers AFTER I pull them: [combine pages or reports? roll up to my org? exclude anything? compare to target? week-over-week vs last slide? Excel in between?]
+6. Judgment calls I make by hand: [items I drop or adjust, rounding, anything "you'd just know"]
+7. What the final output looks like and who gets it: [one slide, bar chart by product, goes to …]
+8. Anything on my slide that is NOT from MSXi: [e.g., a target from a spreadsheet, a manual note, another system — or "nothing"]</pre></div>
+          <div class="callout">
+            <strong>Tip</strong>
+            <p>Items 5 and 6 matter most. If you'd say "you'll just know which ones to leave out" — write exactly that. It's the part no dashboard can see.</p>
+          </div>
+          <div class="callout">
+            <strong>Two more that save time</strong>
+            <ul>
+              <li>Line 8 heads off a false alarm. Cowork pulls only from MSXi, so anything listed there won't appear unless you attach it.</li>
+              <li>Name your org the way MSXi labels it — not "my team".</li>
+            </ul>
+          </div>
+          <div class="completion-control">
+            <p class="completion-criterion" id="e1s1-done"><strong>You're done when:</strong> all eight lines have something in them, even if it's "nothing".</p>
+            <button type="button" class="completion-button" data-check="e1s1" aria-pressed="false" aria-describedby="e1s1-done"><span class="completion-symbol" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="m5 12 4 4 10-9" pathLength="1"/></svg></span><span data-done-label>Mark this step done</span></button>
+            <a class="button next-step" href="#e1s2" data-next="e1s2" hidden>Next: 1.2 Open MSXi side by side <span aria-hidden="true">&rarr;</span></a>
+          </div>
+        </div>
+      </article>
+
+      <article class="lab-step" id="e1s2" data-step data-nav-title="Open MSXi side by side" aria-labelledby="e1s2-title">
+        <div class="lab-step__header"><span class="step-number" aria-hidden="true">2</span><div><h3 id="e1s2-title" tabindex="-1">Open MSXi side by side</h3><p class="small">Exercise 1 · Step 2 of 2</p></div></div>
+        <div class="lab-step__body">
+          <p>In a second window, open your MSXi report with your usual slicers. You will compare Cowork's result against this, live — not against last week's slide (open pipeline moves daily).</p>
+          <p>If line 4 of your card says weekly snapshot, open that snapshot instead.</p>
+          <div class="shot-placeholder">{{Screenshot: MSXi report with slicer pane visible, chart area blurred}}</div>
+          <div class="completion-control">
+            <p class="completion-criterion" id="e1s2-done"><strong>You're done when:</strong> Cowork and MSXi are both open.</p>
+            <button type="button" class="completion-button" data-check="e1s2" aria-pressed="false" aria-describedby="e1s2-done"><span class="completion-symbol" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="m5 12 4 4 10-9" pathLength="1"/></svg></span><span data-done-label>Mark this step done</span></button>
+            <a class="button next-step" href="#ex2" data-next="ex2" hidden>Next: Exercise 2 — Build this week's version <span aria-hidden="true">&rarr;</span></a>
+          </div>
+        </div>
+      </article>
+    </section>
+
+    <!-- Exercise 2 -->
+    <section class="exercise" id="ex2" data-ex="2" data-nav-title="Build this week's version" data-time="12 min" aria-labelledby="ex2-title">
+      <div class="exercise__header">
+        <p class="eyebrow">Exercise 2</p>
+        <h2 id="ex2-title" tabindex="-1">Build this week's version</h2>
+        <p class="exercise__meta"><span>12 min</span><span>6 steps</span><span class="ex-count js-only" data-ex-count>0 of 6 done</span></p>
+      </div>
+
+      <article class="lab-step" id="e2s1" data-step data-nav-title="Start a new task and set the model" aria-labelledby="e2s1-title">
+        <div class="lab-step__header"><span class="step-number" aria-hidden="true">1</span><div><h3 id="e2s1-title" tabindex="-1">Start a new Cowork task and set the model</h3><p class="small">Exercise 2 · Step 1 of 6</p></div></div>
+        <div class="lab-step__body">
+          <p>Go to the Cowork home page to start a new task. Set the model to <strong>Fable 5.1</strong> with <strong>Max</strong> thinking. <span class="placeholder">{{VERIFY: exact menu label}}</span></p>
+          <div class="shot-placeholder">{{Screenshot: new task with model picker}}</div>
+          <div class="completion-control">
+            <p class="completion-criterion" id="e2s1-done"><strong>You're done when:</strong> a blank task is open with the setting applied.</p>
+            <button type="button" class="completion-button" data-check="e2s1" aria-pressed="false" aria-describedby="e2s1-done"><span class="completion-symbol" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="m5 12 4 4 10-9" pathLength="1"/></svg></span><span data-done-label>Mark this step done</span></button>
+            <a class="button next-step" href="#e2s2" data-next="e2s2" hidden>Next: 2.2 Attach last week's slide <span aria-hidden="true">&rarr;</span></a>
+          </div>
+        </div>
+      </article>
+
+      <article class="lab-step" id="e2s2" data-step data-nav-title="Attach last week's slide" aria-labelledby="e2s2-title">
+        <div class="lab-step__header"><span class="step-number" aria-hidden="true">2</span><div><h3 id="e2s2-title" tabindex="-1">Attach last week's slide</h3><p class="small">Exercise 2 · Step 2 of 6</p></div></div>
+        <div class="lab-step__body">
+          <p>Select <strong>Add attachments</strong>, then <strong>Upload images and files</strong>, and choose your own copy of last week's report. If it's saved in OneDrive or SharePoint, choose <strong>Attach cloud files and folders</strong> instead. Dragging the file onto the message box also works.</p>
+          <div class="shot-placeholder">{{Screenshot: attach file}}</div>
+          <div class="callout">
+            <strong>Tip</strong>
+            <p>The slide is for layout and week-over-week comparison only. Cowork pulls every number fresh.</p>
+          </div>
+          <div class="completion-control">
+            <p class="completion-criterion" id="e2s2-done"><strong>You're done when:</strong> the file shows as attached and the upload has finished.</p>
+            <button type="button" class="completion-button" data-check="e2s2" aria-pressed="false" aria-describedby="e2s2-done"><span class="completion-symbol" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="m5 12 4 4 10-9" pathLength="1"/></svg></span><span data-done-label>Mark this step done</span></button>
+            <a class="button next-step" href="#e2s3" data-next="e2s3" hidden>Next: 2.3 Paste the Build prompt <span aria-hidden="true">&rarr;</span></a>
+          </div>
+        </div>
+      </article>
+
+      <article class="lab-step" id="e2s3" data-step data-nav-title="Paste the Build prompt" aria-labelledby="e2s3-title">
+        <div class="lab-step__header"><span class="step-number" aria-hidden="true">3</span><div><h3 id="e2s3-title" tabindex="-1">Paste the Build prompt, with your Recipe Card in the middle</h3><p class="small">Exercise 2 · Step 3 of 6</p></div></div>
+        <div class="lab-step__body">
+          <p>Copy the prompt, paste your filled-in Recipe Card where it says to, and send it.</p>
+          <div class="lab-code"><div class="code-header"><span>Build prompt</span><button type="button" class="copy-button" data-copy="code-build" aria-label="Copy Build prompt">Copy</button></div><pre id="code-build">I need this week's version of my weekly business report. Last week's version is attached — use it for the layout and for week-over-week comparison, NOT as the numbers to hit. Pull everything fresh from the MSX Insights (MSXi) Power BI report, as me.
+
+Here is how I'd explain my report to a new intern:
+[PASTE YOUR RECIPE CARD HERE]
+
+Before you pull anything, ask me any clarifying questions — don't guess.
+Then produce an HTML page with:
+- the numbers, in the same layout as my slide
+- a "Filters applied" box listing every filter, scope rule and transformation you used
+- a short list of anything you had to assume
+Double-check your figures and walk me through your reasoning.</pre></div>
+          <div class="callout important">
+            <strong>Important</strong>
+            <p>Do not tell it the number you expect. Let it show its work — that's how you'll see where a definition differs from yours.</p>
+          </div>
+          <div class="completion-control">
+            <p class="completion-criterion" id="e2s3-done"><strong>You're done when:</strong> the prompt is sent.</p>
+            <button type="button" class="completion-button" data-check="e2s3" aria-pressed="false" aria-describedby="e2s3-done"><span class="completion-symbol" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="m5 12 4 4 10-9" pathLength="1"/></svg></span><span data-done-label>Mark this step done</span></button>
+            <a class="button next-step" href="#e2s4" data-next="e2s4" hidden>Next: 2.4 Answer its questions <span aria-hidden="true">&rarr;</span></a>
+          </div>
+        </div>
+      </article>
+
+      <article class="lab-step" id="e2s4" data-step data-nav-title="Answer its questions, then let it run" aria-labelledby="e2s4-title">
+        <div class="lab-step__header"><span class="step-number" aria-hidden="true">4</span><div><h3 id="e2s4-title" tabindex="-1">Answer its questions, then let it run</h3><p class="small">Exercise 2 · Step 4 of 6</p></div></div>
+        <div class="lab-step__body">
+          <p>It will ask one or two things. Answer in plain English. If it shows choices, pick one and select <strong>Submit</strong> — don't select <strong>Skip</strong>, which tells it to carry on and guess.</p>
+          <p>Then it runs for 2–5 minutes. While you wait, get your three checks ready:</p>
+          <ul class="checks">
+            <li><strong>Shape</strong><span>Same metrics, same cuts, same layout as my slide?</span></li>
+            <li><strong>Locked numbers</strong><span>Anything already closed (prior months, actuals, targets) should match last week's slide exactly.</span></li>
+            <li><strong>Live numbers</strong><span>Anything still moving (open pipeline, forecast) should match the MSXi window right now. If your card says weekly snapshot, match that snapshot instead.</span></li>
+          </ul>
+          <div class="completion-control">
+            <p class="completion-criterion" id="e2s4-done"><strong>You're done when:</strong> the page appears.</p>
+            <button type="button" class="completion-button" data-check="e2s4" aria-pressed="false" aria-describedby="e2s4-done"><span class="completion-symbol" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="m5 12 4 4 10-9" pathLength="1"/></svg></span><span data-done-label>Mark this step done</span></button>
+            <a class="button next-step" href="#e2s5" data-next="e2s5" hidden>Next: 2.5 Score the result <span aria-hidden="true">&rarr;</span></a>
+          </div>
+        </div>
+      </article>
+
+      <article class="lab-step" id="e2s5" data-step data-nav-title="Score the result" aria-labelledby="e2s5-title">
+        <div class="lab-step__header"><span class="step-number" aria-hidden="true">5</span><div><h3 id="e2s5-title" tabindex="-1">Score the result</h3><p class="small">Exercise 2 · Step 5 of 6</p></div></div>
+        <div class="lab-step__body">
+          <p>Run the three checks. Note what matched and what didn't.</p>
+          <p>Leave out anything you listed on line 8 of your card. Cowork pulls only from MSXi, so those aren't misses.</p>
+          <div class="shot-placeholder">{{Screenshot: example output page with "Filters applied" box highlighted}}</div>
+          <div class="callout success">
+            <strong>Match or mismatch — both are wins</strong>
+            <p>A match means your recipe is right and repeatable. A mismatch means you just found a definition gap, in your own words. Both are wins — write down which one you got.</p>
+          </div>
+          <div class="completion-control">
+            <p class="completion-criterion" id="e2s5-done"><strong>You're done when:</strong> each of the three checks has a yes or no.</p>
+            <button type="button" class="completion-button" data-check="e2s5" aria-pressed="false" aria-describedby="e2s5-done"><span class="completion-symbol" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="m5 12 4 4 10-9" pathLength="1"/></svg></span><span data-done-label>Mark this step done</span></button>
+            <a class="button next-step" href="#e2s6" data-next="e2s6" hidden>Next: 2.6 If something doesn't match <span aria-hidden="true">&rarr;</span></a>
+          </div>
+        </div>
+      </article>
+
+      <article class="lab-step" id="e2s6" data-step data-nav-title="If something doesn't match, find the gap" aria-labelledby="e2s6-title">
+        <div class="lab-step__header"><span class="step-number" aria-hidden="true">6</span><div><h3 id="e2s6-title" tabindex="-1">If something doesn't match, ask it to find the gap</h3><p class="small">Exercise 2 · Step 6 of 6</p></div></div>
+        <div class="lab-step__body">
+          <p>Fill in the brackets and send it.</p>
+          <div class="lab-code"><div class="code-header"><span>Gap prompt</span><button type="button" class="copy-button" data-copy="code-gap" aria-label="Copy Gap prompt">Copy</button></div><pre id="code-gap">Your figure for [ITEM] is [its number]. MSXi with my slicers shows [MSXi number] right now. Don't just change the number — find the filter, scope or definition difference that explains the gap, tell me what it is in one sentence, then rebuild with the corrected definition and show the updated "Filters applied" box.</pre></div>
+          <p>Do this once or twice. If it's still off, raise your hand — that's a finding for SE&amp;O, not a failure.</p>
+          <div class="completion-control">
+            <p class="completion-criterion" id="e2s6-done"><strong>You're done when:</strong> it matches, or you've captured the reason it doesn't.</p>
+            <button type="button" class="completion-button" data-check="e2s6" aria-pressed="false" aria-describedby="e2s6-done"><span class="completion-symbol" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="m5 12 4 4 10-9" pathLength="1"/></svg></span><span data-done-label>Mark this step done</span></button>
+            <a class="button next-step" href="#ex3" data-next="ex3" hidden>Next: Exercise 3 — Add the narrative <span aria-hidden="true">&rarr;</span></a>
+          </div>
+        </div>
+      </article>
+    </section>
+
+    <!-- Exercise 3 -->
+    <section class="exercise" id="ex3" data-ex="3" data-nav-title="Add the narrative" data-time="8 min" aria-labelledby="ex3-title">
+      <div class="exercise__header">
+        <p class="eyebrow">Exercise 3</p>
+        <h2 id="ex3-title" tabindex="-1">Add the narrative</h2>
+        <p class="exercise__meta"><span>8 min</span><span>2 steps + stretch goal</span><span class="ex-count js-only" data-ex-count>0 of 2 done</span></p>
+      </div>
+
+      <article class="lab-step" id="e3s1" data-step data-nav-title="Paste the Context prompt" aria-labelledby="e3s1-title">
+        <div class="lab-step__header"><span class="step-number" aria-hidden="true">1</span><div><h3 id="e3s1-title" tabindex="-1">Paste the Context prompt</h3><p class="small">Exercise 3 · Step 1 of 2</p></div></div>
+        <div class="lab-step__body">
+          <p>Send this in the same task. Replace the last line with anything you normally add by hand, or delete it.</p>
+          <div class="lab-code"><div class="code-header"><span>Context prompt</span><button type="button" class="copy-button" data-copy="code-context" aria-label="Copy Context prompt">Copy</button></div><pre id="code-context">Now add the context my leadership asks about, keeping the "Filters applied" box:
+1. For each product or line on the page, the latest forecast comments from MSX and how old they are.
+2. What changed since last week's version (attached): new, moved, dropped or re-valued — with the reason from the forecast comments where there is one.
+3. Anything that looks unreliable: placeholder values, notes older than 30 days, items flagged as duplicates, past-due close dates.
+4. A three-bullet narrative I could say out loud: upside, risk, what changed.
+[ADD YOUR OWN ASK HERE — anything you normally add by hand]</pre></div>
+          <div class="completion-control">
+            <p class="completion-criterion" id="e3s1-done"><strong>You're done when:</strong> the page has a narrative section.</p>
+            <button type="button" class="completion-button" data-check="e3s1" aria-pressed="false" aria-describedby="e3s1-done"><span class="completion-symbol" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="m5 12 4 4 10-9" pathLength="1"/></svg></span><span data-done-label>Mark this step done</span></button>
+            <a class="button next-step" href="#e3s2" data-next="e3s2" hidden>Next: 3.2 Read it as if you're about to say it <span aria-hidden="true">&rarr;</span></a>
+          </div>
+        </div>
+      </article>
+
+      <article class="lab-step" id="e3s2" data-step data-nav-title="Read it as if you're about to say it" aria-labelledby="e3s2-title">
+        <div class="lab-step__header"><span class="step-number" aria-hidden="true">2</span><div><h3 id="e3s2-title" tabindex="-1">Read it as if you're about to say it to your leadership</h3><p class="small">Exercise 3 · Step 2 of 2</p></div></div>
+        <div class="lab-step__body">
+          <p>What would you change before sending? Write it down. Each edit is one of two things: something Cowork could pull if you asked (try one more prompt), or judgment that stays with you. Both go into the readout.</p>
+          <div class="completion-control">
+            <p class="completion-criterion" id="e3s2-done"><strong>You're done when:</strong> you have at least one note.</p>
+            <button type="button" class="completion-button" data-check="e3s2" aria-pressed="false" aria-describedby="e3s2-done"><span class="completion-symbol" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="m5 12 4 4 10-9" pathLength="1"/></svg></span><span data-done-label>Mark this step done</span></button>
+            <a class="button next-step" href="#ex4" data-next="ex4" hidden>Next: Exercise 4 — Make it run every week <span aria-hidden="true">&rarr;</span></a>
+          </div>
+        </div>
+      </article>
+
+      <aside class="stretch" id="stretch" aria-labelledby="stretch-title">
+        <p class="eyebrow">Stretch goal · optional</p>
+        <h3 id="stretch-title">Make it my slide</h3>
+        <p>Finished early? Send this in the same task.</p>
+        <div class="lab-code"><div class="code-header"><span>Slide prompt</span><button type="button" class="copy-button" data-copy="code-slide" aria-label="Copy Slide prompt">Copy</button></div><pre id="code-slide">Turn this into a single PowerPoint slide in the same layout as the attached one, with the "Filters applied" list in the speaker notes.</pre></div>
+      </aside>
+    </section>
+
+    <!-- Exercise 4 -->
+    <section class="exercise" id="ex4" data-ex="4" data-nav-title="Make it run every week" data-time="5 min" aria-labelledby="ex4-title">
+      <div class="exercise__header">
+        <p class="eyebrow">Exercise 4</p>
+        <h2 id="ex4-title" tabindex="-1">Make it run every week</h2>
+        <p class="exercise__meta"><span>5 min</span><span>2 steps</span><span class="ex-count js-only" data-ex-count>0 of 2 done</span></p>
+      </div>
+
+      <article class="lab-step" id="e4s1" data-step data-nav-title="Paste the Schedule prompt" aria-labelledby="e4s1-title">
+        <div class="lab-step__header"><span class="step-number" aria-hidden="true">1</span><div><h3 id="e4s1-title" tabindex="-1">Paste the Schedule prompt and approve the permission card</h3><p class="small">Exercise 4 · Step 1 of 2</p></div></div>
+        <div class="lab-step__body">
+          <div class="lab-code"><div class="code-header"><span>Schedule prompt</span><button type="button" class="copy-button" data-copy="code-schedule" aria-label="Copy Schedule prompt">Copy</button></div><pre id="code-schedule">Set this up to run automatically every Friday at 11:00 AM Eastern, pulling fresh MSXi data each time, and deliver the result to me. Before you save it, show me the task description you'll use so I can confirm it matches my recipe.</pre></div>
+          <p>When Cowork asks how to turn it on, choose <strong>Activate</strong>, not <strong>Activate and run now</strong>. The first run then happens at the scheduled time instead of starting a full run in the room. You can find it later under <strong>Automations</strong> in Cowork's left navigation.</p>
+          <div class="shot-placeholder">{{Screenshot: scheduled-task approval card}}</div>
+          <div class="completion-control">
+            <p class="completion-criterion" id="e4s1-done"><strong>You're done when:</strong> the task is saved.</p>
+            <button type="button" class="completion-button" data-check="e4s1" aria-pressed="false" aria-describedby="e4s1-done"><span class="completion-symbol" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="m5 12 4 4 10-9" pathLength="1"/></svg></span><span data-done-label>Mark this step done</span></button>
+            <a class="button next-step" href="#e4s2" data-next="e4s2" hidden>Next: 4.2 Read the task description back <span aria-hidden="true">&rarr;</span></a>
+          </div>
+        </div>
+      </article>
+
+      <article class="lab-step" id="e4s2" data-step data-nav-title="Read the task description back" aria-labelledby="e4s2-title">
+        <div class="lab-step__header"><span class="step-number" aria-hidden="true">2</span><div><h3 id="e4s2-title" tabindex="-1">Read the task description back</h3><p class="small">Exercise 4 · Step 2 of 2</p></div></div>
+        <div class="lab-step__body">
+          <p>Does it read like your Recipe Card? If anything is missing or wrong, tell Cowork in plain English and have it update the task.</p>
+          <div class="callout success">
+            <strong>That paragraph is your recipe</strong>
+            <p>Stripped of numbers, it is exactly what SE&amp;O needs to build the durable version. Show it to your facilitator.</p>
+          </div>
+          <div class="completion-control">
+            <p class="completion-criterion" id="e4s2-done"><strong>You're done when:</strong> the description matches how you'd brief an intern.</p>
+            <button type="button" class="completion-button" data-check="e4s2" aria-pressed="false" aria-describedby="e4s2-done"><span class="completion-symbol" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="m5 12 4 4 10-9" pathLength="1"/></svg></span><span data-done-label>Mark this step done</span></button>
+            <a class="button next-step" href="#ex5" data-next="ex5" hidden>Next: Exercise 5 — Readout <span aria-hidden="true">&rarr;</span></a>
+          </div>
+        </div>
+      </article>
+    </section>
+
+    <!-- Exercise 5 -->
+    <section class="exercise" id="ex5" data-ex="5" data-nav-title="Readout" data-time="10 min" aria-labelledby="ex5-title">
+      <div class="exercise__header">
+        <p class="eyebrow">Exercise 5</p>
+        <h2 id="ex5-title" tabindex="-1">Readout</h2>
+        <p class="exercise__meta"><span>10 min, as a group</span><span>2 steps</span><span class="ex-count js-only" data-ex-count>0 of 2 done</span></p>
+      </div>
+
+      <article class="lab-step" id="e5s1" data-step data-nav-title="One minute each" aria-labelledby="e5s1-title">
+        <div class="lab-step__header"><span class="step-number" aria-hidden="true">1</span><div><h3 id="e5s1-title" tabindex="-1">One minute each</h3><p class="small">Exercise 5 · Step 1 of 2</p></div></div>
+        <div class="lab-step__body">
+          <p>Three things: one number that matched; one that didn't and why; one thing you'd want on your desk every Monday without asking.</p>
+          <div class="completion-control">
+            <p class="completion-criterion" id="e5s1-done"><strong>You're done when:</strong> you've shared yours.</p>
+            <button type="button" class="completion-button" data-check="e5s1" aria-pressed="false" aria-describedby="e5s1-done"><span class="completion-symbol" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="m5 12 4 4 10-9" pathLength="1"/></svg></span><span data-done-label>Mark this step done</span></button>
+            <a class="button next-step" href="#e5s2" data-next="e5s2" hidden>Next: 5.2 What happens next <span aria-hidden="true">&rarr;</span></a>
+          </div>
+        </div>
+      </article>
+
+      <article class="lab-step" id="e5s2" data-step data-nav-title="What happens next" aria-labelledby="e5s2-title">
+        <div class="lab-step__header"><span class="step-number" aria-hidden="true">2</span><div><h3 id="e5s2-title" tabindex="-1">What happens next</h3><p class="small">Exercise 5 · Step 2 of 2</p></div></div>
+        <div class="lab-step__body">
+          <p>Your scheduled task keeps running — expect the first delivery Friday. Facilitators consolidate the recipes (no numbers) for SE&amp;O; you'll hear back by <span class="placeholder">{{SEO_FOLLOWUP_DATE}}</span>.</p>
+          <div class="completion-control">
+            <p class="completion-criterion" id="e5s2-done"><strong>You're done when:</strong> you know what lands when.</p>
+            <button type="button" class="completion-button" data-check="e5s2" aria-pressed="false" aria-describedby="e5s2-done"><span class="completion-symbol" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="m5 12 4 4 10-9" pathLength="1"/></svg></span><span data-done-label>Mark this step done</span></button>
+            <a class="button next-step" href="#lab-complete" data-next="lab-complete" hidden>See your wrap-up <span aria-hidden="true">&rarr;</span></a>
+          </div>
+        </div>
+      </article>
+    </section>
+
+    <section class="outcome" id="lab-complete" aria-labelledby="lab-complete-title">
+      <p class="eyebrow">Wrap-up</p>
+      <h2 id="lab-complete-title" tabindex="-1">Your recipe, your page, your Friday run</h2>
+      <p id="outcome-text">Work through the steps above and mark each one done as you finish it.</p>
+      <p class="small">To edit or pause your weekly run later, open <strong>Automations</strong> in Cowork.</p>
+    </section>
+
+    <section class="reference-section" id="sources" aria-labelledby="sources-title">
+      <h2 id="sources-title">Sources</h2>
+      <ol class="reference-list">
+        <li id="ref-1"><a href="https://learn.microsoft.com/en-us/microsoft-365/copilot/cowork/use-cowork" target="_blank" rel="noopener noreferrer">Use Copilot Cowork<span class="sr-only"> (opens in a new tab)</span></a><span class="small">Microsoft Learn · content updated 28 September 2026 · checked 3 October 2026. Basis for: Add attachments, answering Cowork's questions (Submit / Skip), and scheduled prompts (Activate, Automations).</span><span class="reference-url">https://learn.microsoft.com/en-us/microsoft-365/copilot/cowork/use-cowork</span></li>
+      </ol>
+      <p class="small">Anything shown in {{double braces}} is a placeholder your facilitator will fill in before the session.</p>
+    </section>
+
+    <footer class="footer">
+      <p>Your progress is saved in this browser only. Nothing on this page is sent anywhere.</p>
+      <button type="button" class="js-only" data-action="reset">Reset my progress</button>
+    </footer>
+  </main>
+</div>
+
+<div class="toast" id="toast" hidden></div>
+<p class="sr-only" id="live" aria-live="polite"></p>
+
+<dialog id="copy-dialog" aria-labelledby="copy-title">
+  <h2 id="copy-title">Copy this text</h2>
+  <p>Your browser blocked automatic copying. The text is selected below: press Ctrl+C (Cmd+C on a Mac), then close this box.</p>
+  <textarea id="manual-copy" readonly aria-label="Text to copy"></textarea>
+  <div class="actions"><button type="button" id="copy-close" class="primary">Close</button></div>
+</dialog>
+
+<dialog id="reset-dialog" aria-labelledby="reset-title">
+  <h2 id="reset-title">Reset your progress?</h2>
+  <p>This clears every "Done" mark in this browser. Nothing else changes, and nothing is sent anywhere.</p>
+  <div class="actions"><button type="button" id="reset-cancel">Cancel</button><button type="button" id="reset-confirm" class="primary">Reset progress</button></div>
+</dialog>
+
+<script>
+(() => {
+  "use strict";
+  const STORAGE_KEY = "lab-hls-weekly-report-v1";
+  const root = document.documentElement;
+  const byId = id => document.getElementById(id);
+  const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
+  const escapeHtml = text => String(text).replace(/[&<>"']/g, ch => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[ch]));
+
+  try {
+    let storageAvailable = true;
+    const state = { steps: {}, theme: null };
+    try {
+      const saved = JSON.parse(window.localStorage.getItem(STORAGE_KEY) || "null");
+      if (saved && typeof saved === "object") {
+        if (saved.steps && typeof saved.steps === "object") {
+          for (const [id, value] of Object.entries(saved.steps)) if (value === true) state.steps[id] = true;
+        }
+        if (saved.theme === "dark" || saved.theme === "light") state.theme = saved.theme;
+      }
+    } catch (error) {
+      storageAvailable = false;
+    }
+
+    const steps = [...document.querySelectorAll("article.lab-step[data-step]")];
+    const exercises = [...document.querySelectorAll("section.exercise")];
+    const TOTAL = steps.length;
+    const isDone = id => state.steps[id] === true;
+
+    function updateStorageNote() {
+      byId("storage-note").textContent = storageAvailable
+        ? "Your progress is saved in this browser only. Nothing on this page is sent anywhere."
+        : "This browser isn't saving progress, so your Done marks reset when you reload. Nothing on this page is sent anywhere.";
+    }
+    function save() {
+      if (!storageAvailable) return;
+      try {
+        window.localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+      } catch (error) {
+        storageAvailable = false;
+        updateStorageNote();
+      }
+    }
+
+    let toastTimer;
+    function announce(message, visible = true) {
+      byId("live").textContent = "";
+      window.setTimeout(() => { byId("live").textContent = message; }, 30);
+      if (!visible) return;
+      window.clearTimeout(toastTimer);
+      const toast = byId("toast");
+      toast.textContent = message;
+      toast.hidden = false;
+      toastTimer = window.setTimeout(() => { toast.hidden = true; }, 4000);
+    }
+
+    function buildNavigation() {
+      const items = [
+        `<li><a href="#overview" data-target="overview"><span>Overview</span></a></li>`,
+        `<li><a href="#pre-lab" data-target="pre-lab"><span>Pre-lab setup <span class="nav-meta">before the session</span></span></a></li>`
+      ];
+      for (const section of exercises) {
+        const number = section.dataset.ex;
+        const ownSteps = [...section.querySelectorAll("article.lab-step[data-step]")];
+        const stepLinks = ownSteps.map((article, index) =>
+          `<li><a href="#${article.id}" data-target="${article.id}"><span class="nav-number" aria-hidden="true">${number}.${index + 1}</span><span>${escapeHtml(article.dataset.navTitle)}<span class="sr-only" data-nav-state></span></span></a></li>`
+        ).join("");
+        items.push(`<li class="nav-exercise"><a href="#${section.id}" data-target="${section.id}"><span>Exercise ${number} · ${escapeHtml(section.dataset.navTitle)}</span><span class="nav-meta">${escapeHtml(section.dataset.time)}</span></a><ol>${stepLinks}</ol></li>`);
+      }
+      items.push(`<li class="nav-exercise"><a href="#lab-complete" data-target="lab-complete"><span>Wrap-up</span></a></li>`);
+      items.push(`<li><a href="#sources" data-target="sources"><span>Sources</span></a></li>`);
+      byId("nav-list").innerHTML = items.join("");
+    }
+
+    function updateProgress() {
+      let count = 0;
+      for (const article of steps) {
+        const done = isDone(article.id);
+        if (done) count += 1;
+        article.classList.toggle("completed", done);
+        const button = article.querySelector("[data-check]");
+        button.setAttribute("aria-pressed", String(done));
+        button.querySelector("[data-done-label]").textContent = done ? "Done \u2014 click to undo" : "Mark this step done";
+        if (!done) button.classList.remove("is-celebrating");
+        const next = article.querySelector("[data-next]");
+        if (next) next.hidden = !done;
+        const link = document.querySelector(`.step-nav a[data-target="${article.id}"]`);
+        if (link) {
+          link.classList.toggle("done", done);
+          link.querySelector("[data-nav-state]").textContent = done ? " (done)" : "";
+        }
+      }
+      for (const section of exercises) {
+        const ownSteps = [...section.querySelectorAll("article.lab-step[data-step]")];
+        const doneCount = ownSteps.filter(article => isDone(article.id)).length;
+        section.querySelector("[data-ex-count]").textContent = `${doneCount} of ${ownSteps.length} done`;
+        section.classList.toggle("exercise--complete", doneCount === ownSteps.length);
+      }
+      byId("progress").max = TOTAL;
+      byId("progress").value = count;
+      byId("progress-count").textContent = `${count} of ${TOTAL}`;
+      byId("header-count").textContent = `${count}/${TOTAL}`;
+      byId("header-progress").style.width = `${Math.round((count / TOTAL) * 100)}%`;
+      const complete = count === TOTAL;
+      byId("lab-complete").classList.toggle("complete", complete);
+      byId("outcome-text").textContent = complete
+        ? `All ${TOTAL} steps done. Your recipe is written down, your page shows its filters, and your weekly run is scheduled for Fridays at 11:00 AM Eastern.`
+        : `${count} of ${TOTAL} steps done. Work through the steps above and mark each one done as you finish it.`;
+    }
+
+    const trackedIds = ["overview", "pre-lab", ...exercises.flatMap(section => [section.id, ...[...section.querySelectorAll("article.lab-step[data-step]")].map(article => article.id)]), "lab-complete", "sources"];
+    function updateActiveNavigation() {
+      const offset = parseFloat(getComputedStyle(root).getPropertyValue("--guide-scroll-offset")) || 0;
+      let active = trackedIds[0];
+      for (const id of trackedIds) {
+        const element = byId(id);
+        if (element && element.getBoundingClientRect().top <= offset + 32) active = id;
+      }
+      for (const link of document.querySelectorAll(".step-nav a")) {
+        if (link.dataset.target === active) link.setAttribute("aria-current", "location");
+        else link.removeAttribute("aria-current");
+      }
+    }
+
+    const anchorSelector = "main h1, main h2, main h3, main p, main li, main pre, main .shot-placeholder, main .completion-button";
+    let readingAnchor = null;
+    function captureAnchor() {
+      readingAnchor = null;
+      if (window.scrollY < 2) return;
+      const offset = parseFloat(getComputedStyle(root).getPropertyValue("--guide-scroll-offset")) || 0;
+      for (const element of document.querySelectorAll(anchorSelector)) {
+        const rect = element.getBoundingClientRect();
+        if (rect.height > 0 && rect.bottom > offset) { readingAnchor = { element, top: rect.top }; return; }
+      }
+    }
+    function restoreAnchor() {
+      if (!readingAnchor || !readingAnchor.element.isConnected) return;
+      const delta = readingAnchor.element.getBoundingClientRect().top - readingAnchor.top;
+      if (Math.abs(delta) > 1) window.scrollBy({ top: delta, left: 0, behavior: "instant" });
+    }
+
+    const wideLayout = window.matchMedia("(min-width: 64rem) and (min-height: 44rem)");
+    const disclosure = byId("guide-navigation");
+    const disclosureOpen = { wide: true, compact: false };
+    let layoutMode;
+    let layoutFrame = 0;
+    function syncResponsiveLayout() {
+      layoutFrame = 0;
+      const mode = wideLayout.matches ? "wide" : "compact";
+      if (mode !== layoutMode) {
+        if (layoutMode) disclosureOpen[layoutMode] = disclosure.open;
+        const focusInside = disclosure.contains(document.activeElement) && document.activeElement !== disclosure.querySelector("summary");
+        disclosure.open = disclosureOpen[mode] || focusInside;
+        layoutMode = mode;
+      }
+      const header = document.querySelector(".site-header");
+      header.classList.toggle("is-static", header.offsetHeight > window.innerHeight * 0.25);
+      const gap = parseFloat(getComputedStyle(root).fontSize) || 16;
+      const offset = (getComputedStyle(header).position === "sticky" ? header.getBoundingClientRect().height : 0) + gap;
+      root.style.setProperty("--guide-scroll-offset", `${Math.ceil(offset)}px`);
+      restoreAnchor();
+      updateActiveNavigation();
+    }
+    function scheduleLayout() {
+      if (!layoutFrame) layoutFrame = window.requestAnimationFrame(syncResponsiveLayout);
+    }
+    window.addEventListener("resize", scheduleLayout, { passive: true });
+    if ("ResizeObserver" in window) new ResizeObserver(scheduleLayout).observe(document.querySelector(".site-header"));
+    let scrollFrame = 0;
+    window.addEventListener("scroll", () => {
+      if (scrollFrame) return;
+      scrollFrame = window.requestAnimationFrame(() => { scrollFrame = 0; captureAnchor(); updateActiveNavigation(); });
+    }, { passive: true });
+
+    function goTo(id) {
+      const target = byId(id);
+      if (!target) return;
+      const heading = target.matches("h2, h3") ? target : target.querySelector("h2, h3");
+      target.scrollIntoView({ block: "start", behavior: reduceMotion.matches ? "auto" : "smooth" });
+      if (heading) {
+        if (!heading.hasAttribute("tabindex")) heading.setAttribute("tabindex", "-1");
+        heading.focus({ preventScroll: true });
+      }
+      if (window.history && window.history.replaceState) window.history.replaceState(null, "", `#${id}`);
+    }
+
+    function manualCopy(text) {
+      const dialog = byId("copy-dialog");
+      const field = byId("manual-copy");
+      field.value = text;
+      if (typeof dialog.showModal === "function") {
+        dialog.showModal();
+        field.focus();
+        field.select();
+      } else {
+        window.prompt("Copy this text (Ctrl+C or Cmd+C):", text);
+      }
+    }
+    async function copy(button) {
+      const source = byId(button.dataset.copy);
+      const text = source ? source.textContent : "";
+      if (!text) return;
+      if (navigator.clipboard && window.isSecureContext) {
+        try {
+          await navigator.clipboard.writeText(text);
+          button.textContent = "Copied";
+          button.classList.add("copied");
+          window.setTimeout(() => { button.textContent = "Copy"; button.classList.remove("copied"); }, 2000);
+          announce("Copied. Paste it where the step says.");
+          return;
+        } catch (error) {
+          console.warn("Clipboard access was denied; showing manual copy.", error && error.name);
+        }
+      }
+      manualCopy(text);
+    }
+
+    function applyTheme(theme) {
+      root.setAttribute("data-theme", theme);
+      const dark = theme === "dark";
+      const button = byId("theme-button");
+      button.textContent = dark ? "Light mode" : "Dark mode";
+      button.setAttribute("aria-label", `Switch to ${dark ? "light" : "dark"} mode`);
+    }
+
+    function openReset() {
+      const dialog = byId("reset-dialog");
+      if (typeof dialog.showModal === "function") dialog.showModal();
+      else if (window.confirm("Reset your progress? This clears every Done mark in this browser.")) resetProgress();
+    }
+    function resetProgress() {
+      for (const id of Object.keys(state.steps)) delete state.steps[id];
+      save();
+      updateProgress();
+      announce("Progress reset. Every step is back to not done.");
+    }
+
+    document.addEventListener("click", event => {
+      const next = event.target.closest("[data-next]");
+      if (next) {
+        event.preventDefault();
+        goTo(next.dataset.next);
+        return;
+      }
+      const button = event.target.closest("button");
+      if (!button) return;
+      if (button.dataset.check) {
+        const id = button.dataset.check;
+        const done = !isDone(id);
+        if (done) state.steps[id] = true;
+        else delete state.steps[id];
+        save();
+        updateProgress();
+        if (done && !reduceMotion.matches) button.classList.add("is-celebrating");
+        announce(done ? "Step marked done. A Next step link is now below it." : "Step marked not done.", false);
+        return;
+      }
+      if (button.dataset.copy) { void copy(button); return; }
+      if (button.dataset.action === "reset") { openReset(); return; }
+    });
+    document.addEventListener("animationend", event => {
+      if (event.animationName === "done-pop") {
+        const button = event.target.closest(".completion-button");
+        if (button) button.classList.remove("is-celebrating");
+      }
+    });
+
+    byId("theme-button").addEventListener("click", () => {
+      state.theme = root.getAttribute("data-theme") === "dark" ? "light" : "dark";
+      applyTheme(state.theme);
+      save();
+    });
+    byId("print-button").addEventListener("click", () => window.print());
+    byId("copy-close").addEventListener("click", () => byId("copy-dialog").close());
+    byId("reset-cancel").addEventListener("click", () => byId("reset-dialog").close());
+    byId("reset-confirm").addEventListener("click", () => {
+      byId("reset-dialog").close();
+      resetProgress();
+    });
+
+    buildNavigation();
+    applyTheme(root.getAttribute("data-theme") === "dark" ? "dark" : "light");
+    updateStorageNote();
+    updateProgress();
+    syncResponsiveLayout();
+    const enableSmoothScroll = () => window.requestAnimationFrame(() => {
+      captureAnchor();
+      window.requestAnimationFrame(() => root.classList.add("smooth-scroll"));
+    });
+    if (document.readyState === "complete") enableSmoothScroll();
+    else window.addEventListener("load", enableSmoothScroll, { once: true });
+  } catch (error) {
+    root.classList.remove("js");
+    const notice = byId("script-error");
+    if (notice) notice.hidden = false;
+    console.error(error);
+  }
+})();
+</script>
+</body>
+</html>
